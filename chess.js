@@ -1,12 +1,14 @@
-//https://html5.litten.com/how-to-drag-and-drop-on-an-html5-canvas/
-
 //CHESS written with JavaScript
 //v. 1.00
 //Iiro Laukkanen
-//1/2019
+//2/2019
 
-//next thing to do:
-//1. Implement score-counting
+//next things to do:
+//1. Implement score-counting for AI
+//2. Implement chess-situation with kings
+//2.1 Lock moving of other pieces?
+//2.2 Different color for king?
+//3. CODE IS SPAGHETTI
 
 var canvas=document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
@@ -47,6 +49,7 @@ pieces[12]={sign:"Q", color:1,class:6,src:"kuvia/kuningatar_v.png", x:null, y:nu
 
 
 function hit_scan(){
+    //uses movesActive-function for each piece on board and checks all pieces it could eat, aka "hits"
     hits_c=0; 
     hits = [];
     for(var c=0; c<chsCOLS; c++) {
@@ -55,7 +58,7 @@ function hit_scan(){
                 if(board[c][r].class==piece.class && board[c][r].color==piece.color){
                     var ax = Math.floor(board[c][r].x/xsize);
                     var ay = Math.floor(board[c][r].y/ysize);
-                    moves_active(0, ax, ay , piece);
+                    movesActive(0, ax, ay , piece);
                 }
             })
         }
@@ -64,8 +67,8 @@ function hit_scan(){
         var ax = Math.floor(hit.x/xsize);
         var ay = Math.floor(hit.y/ysize);
         console.log("HITS loc "+ax+" "+ay+" Aimed class "+hit.class+" Aimed color "+hit.color);
-        hits = [];
-        }); 
+    });
+    
     badging_nullify();  
 }
 
@@ -137,8 +140,8 @@ function myDown(e){
                 next_color=board[locatX][locatY].color;
                 console.log("HUURRAAA "+piece.y);
                 
-                //pieces moves. takes greened area and info of piece on it as params
-                moves_active(1,locatX,locatY,piece);
+                //piece's moves. takes greened area and info of piece on it as params
+                movesActive(1,locatX,locatY,piece);
                 
                 //drawPiece();
                 //nullifies the greened tiles piece-params
@@ -198,7 +201,7 @@ function badging_nullify(){
 //ye olde switch case; whole lot of if-statements and checks.
 //Code checks each available tile to go to (defined by class) individually and badges them, if there is no obstacle
 //Badging = value on the tile. If tile is badged, it gets greened and piece can move to it
-function moves_active(badging,locatX,locatY,piece){
+function movesActive(badging,locatX,locatY,piece){
      
     switch(piece.sign){
         case "S":
