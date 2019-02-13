@@ -4,11 +4,13 @@
 //2/2019
 
 //next things to do:
-//1. Implement score-counting for AI
+//1. Implement score-counting
 //2. Implement chess-situation with kings
 //2.1 Lock moving of other pieces?
-//2.2 Different color for king?
+//2.2 Different tilecolor for king?
 //3. CODE IS SPAGHETTI
+//4. Turns
+//5. Clean movesActive-function
 
 var canvas=document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
@@ -30,8 +32,6 @@ var hits_c=0;
 
 var board = [];
 
-//x_plus[0]=1, x_minus:1, y_plus:2,y_minus:0
-
 //piece attributes
 var pieces=[];
 pieces[1]={sign:"S", color:0,class:1,src:"kuvia/sotilas_m.png", x:null, y:null}
@@ -48,7 +48,7 @@ pieces[11]={sign:"Q", color:0,class:6,src:"kuvia/kuningatar_m.png", x:null, y:nu
 pieces[12]={sign:"Q", color:1,class:6,src:"kuvia/kuningatar_v.png", x:null, y:null}
 
 
-function hit_scan(){
+function hitScan(){
     //uses movesActive-function for each piece on board and checks all pieces it could eat, aka "hits"
     hits_c=0; 
     hits = [];
@@ -78,9 +78,6 @@ function drawPiece() {
         for(var r=0; r<chsROWS; r++) {
             pieces.forEach(function(piece){    
                 if(board[c][r].class==piece.class && board[c][r].color==piece.color){
-                    // ctx.font = "20px Arial";
-                    // ctx.fillStyle = "#0095DD";
-                    // ctx.fillText(piece.sign, board[c][r].x, board[c][r].y+ysize);
                     pieceSprite(board[c][r].x, board[c][r].y, piece.src);
                     pieceInfo(piece,c,r);
                 };
@@ -119,11 +116,7 @@ function myDown(e){
         ctx.beginPath();
                             ctx.rect((locatX*xsize), (locatY*ysize), xsize, ysize);
                             if(board[locatX][locatY].b_color=="gray"){ctx.fillStyle = "#228B22";}
-                            if(board[locatX][locatY].b_color=="white"){ctx.fillStyle = "#32CD32";}
-                            /* var boardX = (locatY*xsize);
-                            var boardY = (locatX*ysize);
-                            board[locatY][locatX].x = boardX;
-                            board[locatY][locatX].y = boardY; */
+                            else if(board[locatX][locatY].b_color=="white"){ctx.fillStyle = "#32CD32";}
                             ctx.fill();
         ctx.closePath();
 
@@ -132,15 +125,13 @@ function myDown(e){
         pieces.forEach(function(piece){
             if(board[locatX][locatY].class==piece.class && board[locatX][locatY].color==piece.color){
                 pieceSprite(board[locatX][locatY].x,board[locatX][locatY].y,piece.src);
-           
-                
+            
                 next_class=board[locatX][locatY].class;
                 next_color=board[locatX][locatY].color;
                 
                 //piece's moves. takes greened area and info of piece on it as params
                 movesActive(1,locatX,locatY,piece);
                 
-             
                 //nullifies the greened tiles piece-params
                 board[locatX][locatY].class = null;
                 board[locatX][locatY].color = null;
@@ -159,7 +150,6 @@ function myDown(e){
         //if one tile is selected, this happens
         //draws board, aka deletes old sprites
         drawBoard();
-        //drawPiece();
             if(next_class!=null && board[locatX][locatY].badge==1){
                 //draw piece in new loca
                 board[locatX][locatY].class=next_class;
@@ -172,7 +162,7 @@ function myDown(e){
                 
             }
         drawPiece();   
-        hit_scan();   
+        hitScan();   
         next_class = null;
         next_color = null;
         greened = false;
@@ -861,11 +851,10 @@ function drawBoard(){
 function init(){
     //2-dimensional array that hold class (which piece), pieces color and coordinates (x for x-axis and y for y-axis), 
     //and if theres a badge and color of tile
-    
     for(var c=0; c<chsCOLS; c++) {
         board[c] = [];
         for(var r=0; r<chsROWS; r++) {
-        board[c][r] = {x:0,y:0, class: null, color:null, badge:0, b_color:null};
+            board[c][r] = {x:0,y:0, class: null, color:null, badge:0, b_color:null};
         }
     }
         //next is initializing the class and color of board
