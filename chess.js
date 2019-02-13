@@ -112,15 +112,14 @@ function myDown(e){
     var locatX = Math.floor((e.pageX - 100)/xsize);
     var locatY = Math.floor((e.pageY - -8)/ysize);
     
-    console.log("lokaatio "+locatX, locatY);
     if(greened==false){
         //color the clicked area green
         green_info_x = locatX;
         green_info_y = locatY;
         ctx.beginPath();
                             ctx.rect((locatX*xsize), (locatY*ysize), xsize, ysize);
-                            if(board[locatX][locatY].b_color=="gray"){ctx.fillStyle = "#228B22";console.log("B_COLOR: "+board[locatX][locatY].b_color);}
-                            if(board[locatX][locatY].b_color=="white"){ctx.fillStyle = "#32CD32";console.log("B_COLOR: "+board[locatX][locatY].b_color);}
+                            if(board[locatX][locatY].b_color=="gray"){ctx.fillStyle = "#228B22";}
+                            if(board[locatX][locatY].b_color=="white"){ctx.fillStyle = "#32CD32";}
                             /* var boardX = (locatY*xsize);
                             var boardY = (locatX*ysize);
                             board[locatY][locatX].x = boardX;
@@ -133,22 +132,18 @@ function myDown(e){
         pieces.forEach(function(piece){
             if(board[locatX][locatY].class==piece.class && board[locatX][locatY].color==piece.color){
                 pieceSprite(board[locatX][locatY].x,board[locatX][locatY].y,piece.src);
-                //pieceInfo(piece,locatX,locatY);
+           
                 
-                console.log("JAAAAAAAAAAA  " + piece.x);
                 next_class=board[locatX][locatY].class;
                 next_color=board[locatX][locatY].color;
-                console.log("HUURRAAA "+piece.y);
                 
                 //piece's moves. takes greened area and info of piece on it as params
                 movesActive(1,locatX,locatY,piece);
                 
-                //drawPiece();
+             
                 //nullifies the greened tiles piece-params
                 board[locatX][locatY].class = null;
                 board[locatX][locatY].color = null;
-                //green_info.class=
-                //console.log("LUOKKA: "+piece.color)
             };
         });
         
@@ -159,7 +154,6 @@ function myDown(e){
         //just info to different dunctions
         greened = true;
         //drawPiece();
-        console.log("next_class " +next_class)   
     }
     else if(greened==true){
         //if one tile is selected, this happens
@@ -184,7 +178,6 @@ function myDown(e){
         greened = false;
         greencountX = null;  
     }
-  console.log("greened "+greened);
 }
 
 function badging_nullify(){
@@ -920,12 +913,6 @@ function init(){
         board[4][7].class=5;
         board[4][0].color=0;
         board[4][7].color=1;
-
-        board.forEach(function(element){
-        console.log(element);
-        })
-        pieces.forEach(function(element){
-            console.log(element);})
 }
 
 function drawGame(){
@@ -936,4 +923,3 @@ function drawGame(){
 
 drawGame();
 canvas.onmousedown = myDown;
-//canvas.onmouseup = myUp;
