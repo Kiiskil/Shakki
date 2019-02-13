@@ -68,7 +68,7 @@ function hitScan(){
         var ay = Math.floor(hit.y/ysize);
         console.log("HITS loc "+ax+" "+ay+" Aimed class "+hit.class+" Aimed color "+hit.color);
     });
-    
+    console.log("----------------------------------");
     badging_nullify();  
 }
 
