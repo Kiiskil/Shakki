@@ -1,5 +1,4 @@
-# Shakki
-JS-shakki, ehkä tekoaly
+# Chess
 
 Basic chess
 #Add win-condition
